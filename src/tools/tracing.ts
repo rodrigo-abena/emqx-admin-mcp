@@ -21,8 +21,8 @@ export function registerTracingTools(server: McpServer) {
     "create_trace",
     [
       "Start a real-time log trace to capture detailed debug logs for a specific client, topic, or IP.",
-      "Traces are written to an in-memory log and retrievable via get_trace_log.",
-      "Always delete traces when done to avoid memory pressure.",
+      "Events are buffered in memory while running and flushed to disk when the trace expires.",
+      "Use get_trace_log AFTER the trace has stopped (expired), then delete_trace to clean up.",
     ].join(" "),
     {
       environment: envSchema,
@@ -123,7 +123,7 @@ export function registerTracingTools(server: McpServer) {
 
   server.tool(
     "delete_trace",
-    "Stop and remove a log trace. Always clean up traces after debugging.",
+    "Remove a trace entry and its log files. WARNING: deletes all captured log data. Always read the log first with get_trace_log before deleting.",
     {
       environment: envSchema,
       name: z.string().describe("Trace name to delete"),
