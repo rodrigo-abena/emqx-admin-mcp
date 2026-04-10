@@ -36,11 +36,12 @@ export function registerAclTools(server: McpServer) {
     { environment: envSchema },
     async ({ environment }) => {
       // GET the current file source config first so we can PUT it back (triggering reload)
-      const sources = await emqx.get<Array<{ type: string; enable: boolean; path?: string }>>(
+      const resp = await emqx.get<{ sources: Array<{ type: string; enable: boolean; path?: string }> }>(
         environment as Environment,
         "/authorization/sources"
       );
-      const fileSource = sources.find((s) => s.type === "file");
+      const sourceList = Array.isArray(resp) ? resp : resp.sources ?? [];
+      const fileSource = sourceList.find((s) => s.type === "file");
       if (!fileSource) {
         return {
           content: [{ type: "text", text: "No file-based authorization source found. Nothing to reload." }],

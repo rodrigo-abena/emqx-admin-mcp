@@ -25,7 +25,7 @@ export function registerPublishTools(server: McpServer) {
         .describe("Payload encoding. Use 'base64' for binary payloads."),
     },
     async ({ environment, topic, payload, qos, retain, encoding }) => {
-      const data = await emqx.post(environment as Environment, "/mqtt/publish", {
+      const data = await emqx.post(environment as Environment, "/publish", {
         topic,
         payload,
         qos,
